@@ -1,0 +1,45 @@
+.Sidebar {
+  width: $sidebar-size-collapsed;
+  transition: 0.1s ease-in-out width;
+
+  &:hover {
+    width: $sidebar-size;
+    transition: 0.1s ease-in-out width;
+  }
+
+  &--opened {
+    width: $sidebar-size;
+  }
+
+  &__items {
+    list-style: none;
+    padding: 0;
+  }
+
+  &__link {
+    text-indent: 1.2em;
+    line-height: 3.1;
+    min-width: $sidebar-size;
+    color: $sidebar-fg-selected;
+    cursor: pointer;
+
+    &:hover {
+      background: $sidebar-bg-hover;
+    }
+
+    &--disabled {
+      color: $sidebar-fg-default;
+    }
+  }
+
+  &__icon {
+    display: inline;
+    font-size: 18px;
+    margin-right: 18px;
+  }
+
+  &__divider {
+    border: 1px solid $darkgrey-12;
+    margin: 10px 0;
+  }
+}

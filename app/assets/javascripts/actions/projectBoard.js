@@ -22,6 +22,11 @@ const receiveProject = data => ({
   data
 });
 
+export const toggleColumn = column => ({
+  type: actionTypes.TOGGLE_COLUMN_VISIBILITY,
+  column
+});
+
 export const expandStoryIfNeeded = (dispatch, getHash) => {
   const storyId = getHash('#story-');
 

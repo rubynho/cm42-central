@@ -27,4 +27,6 @@ describe('Project Board Actions', () => {
     await expandStoryIfNeeded(fakeDispatch, fakeGetHash);
     expect(fakeDispatch).not.toHaveBeenCalledWith(toggleStory(storyId));
   });
+
+  it('Should dispatch toggleColumn')
 });

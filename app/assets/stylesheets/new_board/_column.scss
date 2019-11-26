@@ -48,11 +48,16 @@
     border-radius: 3px;
 
     &:hover {
-        background-color: $column-btn-close-hover;
-      }
+      background-color: $column-btn-close-hover;
+    }
+
     &:active {
-        background-color: $column-btn-close-active;
-      }
+      background-color: $column-btn-close-active;
+    }
+
+    &--disabled {
+      color: $column-btn-close-disabled
+    }
   }
 
   &__btn-add-story {

@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchProjectBoard } from "actions/projectBoard";
+import { fetchProjectBoard, toggleColumn } from "actions/projectBoard";
 import { fetchPastStories } from "actions/pastIterations";
 import Column from "../Columns/ColumnItem";
 import Stories from "../stories/Stories";
 import Sprints from "../stories/Sprints";
 import History from "../stories/History";
 import { getColumns } from "../../selectors/columns";
-import * as Columns from '../../models/beta/column';
+import * as ColumnModel from '../../models/beta/column';
 import { createStory, closeHistory } from '../../actions/story';
 import AddStoryButton from '../story/AddStoryButton';
 import * as Story from 'libs/beta/constants';
@@ -16,6 +16,9 @@ import { storyPropTypesShape } from '../../models/beta/story';
 import { projectBoardPropTypesShape } from '../../models/beta/projectBoard';
 import Notifications from '../Notifications';
 import { removeNotification } from '../../actions/notifications';
+import Sidebar from './Sidebar';
+import { getVisibleColumnsSelector } from '../../selectors/projectBoard'
+
 
 class ProjectBoard extends React.Component {
   componentWillMount() {
@@ -27,7 +30,15 @@ class ProjectBoard extends React.Component {
       return <b>Loading</b>;
     }
 
-    const { createStory, closeHistory, notifications, removeNotification, history } = this.props;
+    const {
+      createStory,
+      closeHistory,
+      notifications,
+      removeNotification,
+      history,
+      toggleColumn,
+      visibleColumns
+    } = this.props;
 
     return (
       <div className="ProjectBoard">
@@ -35,6 +46,8 @@ class ProjectBoard extends React.Component {
           notifications={notifications}
           onRemove={removeNotification}
         />
+
+        <Sidebar onToggleColumn={toggleColumn} visibleColumns={visibleColumns} />
 
         <Column title={I18n.t("projects.show.chilly_bin")}
           renderAction={() =>
@@ -44,6 +57,9 @@ class ProjectBoard extends React.Component {
               })}
             />
           }
+          isVisible={visibleColumns[ColumnModel.CHILLY_BIN]}
+          canClose={ColumnModel.canClose(visibleColumns)}
+          onClose={() => toggleColumn(ColumnModel.CHILLY_BIN)}
         >
           <Stories stories={this.props.chillyBinStories} />
         </Column>
@@ -56,7 +72,11 @@ class ProjectBoard extends React.Component {
               onAdd={() => createStory({
                 state: Story.status.UNSTARTED
               })}
-            />}
+            />
+          }
+          isVisible={visibleColumns[ColumnModel.BACKLOG]}
+          canClose={ColumnModel.canClose(visibleColumns)}
+          onClose={() => toggleColumn(ColumnModel.BACKLOG)}
         >
           <Sprints
             sprints={this.props.backlogSprints}
@@ -65,6 +85,9 @@ class ProjectBoard extends React.Component {
 
         <Column
           title={I18n.t("projects.show.done")}
+          isVisible={visibleColumns[ColumnModel.DONE]}
+          canClose={ColumnModel.canClose(visibleColumns)}
+          onClose={() => toggleColumn(ColumnModel.DONE)}
         >
           <Sprints
             sprints={this.props.doneSprints}
@@ -111,21 +134,22 @@ const mapStateToProps = ({
   projectBoard,
   history,
   chillyBinStories: getColumns({
-    column: Columns.CHILLY_BIN,
+    column: ColumnModel.CHILLY_BIN,
     stories
   }),
   backlogSprints: getColumns({
-    column: Columns.BACKLOG,
+    column: ColumnModel.BACKLOG,
     stories,
     project,
     pastIterations
   }),
   doneSprints: getColumns({
-    column: Columns.DONE,
+    column: ColumnModel.DONE,
     pastIterations,
     stories
   }),
-  notifications
+  notifications,
+  visibleColumns: getVisibleColumnsSelector(projectBoard),
 });
 
 const mapDispatchToProps = {
@@ -133,11 +157,11 @@ const mapDispatchToProps = {
   createStory,
   closeHistory,
   fetchPastStories,
-  removeNotification
+  removeNotification,
+  toggleColumn
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ProjectBoard);
-

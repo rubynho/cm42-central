@@ -1,8 +1,14 @@
 import actionTypes from 'actions/actionTypes';
+import { toggleColumnVisibility } from '../models/beta/column'
 
 const initialState = {
   isFetched: false,
-  error: null
+  error: null,
+  visibleColumns: {
+    chilly_bin: true,
+    backlog: true,
+    done: true
+  }
 };
 
 const projectBoardReducer = (state = initialState, action) => {
@@ -23,6 +29,11 @@ const projectBoardReducer = (state = initialState, action) => {
     return {
       ...state,
       error: action.error
+    };
+  case actionTypes.TOGGLE_COLUMN_VISIBILITY:
+    return {
+      ...state,
+      visibleColumns: toggleColumnVisibility(state.visibleColumns, action.column)
     };
   default:
     return state;
